@@ -132,7 +132,9 @@ var play_socket = io.of('/LocalInvaders/play').on('connection', function(socket)
   socket.on("C_to_S_game_start", function () {
 	//次のゲームが始められるようにフラグを折る
 	share.timer = false;
-    setTimeout(function(){play_socket.emit("S_to_C_game_end")}, 10000);
+    //setTimeout(function(){play_socket.emit("S_to_C_game_end")}, 30000);
+	var location = share.new_area();
+    play_socket.emit("S_to_C_create_new_area", {location:location})
   });
   //切断したときに送信
   //connect, message, disconnectは予め用意されているイベント
