@@ -18,10 +18,11 @@ var app = express();
 /*
  * 2014-3-25
  * 制作：石川
- * ページ遷移の為に新規に追加した
+ * ページ遷移する際に行う動作の読み込み
  */
 var title = require('./routes/localinvaders').title;
 var room = require('./routes/localinvaders').room;
+var play = require('./routes/localinvaders').play;
 
 /*
  * 2014-3-24
@@ -76,6 +77,7 @@ app.get('/chatroom', chat.chatroom);
 app.get('/gelocation_test', geo.gelocation_test);
 app.get('/LocalInvaders/title', title);
 app.get('/LocalInvaders/room', room);
+app.get('/LocalInvaders/play', play);
 app.get('/users', user.list);
 
 //ここでサーバを立ち上げている
@@ -91,6 +93,35 @@ process.on('uncaughtException', function(err) {
 
 //サーバとソケットを結びつける
 var io = socketio.listen(server);
+
+/*
+ * 2014-3-25
+ * 制作：石川
+ * room画面でのみ使われるソケット通信
+ */
+var game_start = io.of('/LocalInvaders/room').on('connection', function(socket) {
+  console.log('room connected');
+  //メッセージ送信（送信者にも送られる）
+  //C_to_Smessageはイベント名
+  socket.on("C_to_S_game_start", function () {
+    if(share.timer == false) {
+	  //タイマーをスタートさせる
+	  share.timer = true;
+	  console.log('timer start');
+	  setTimeout(function(){game_start.emit("S_to_C_game_start")}, 10000);
+	}else{
+	  //タイマーがスタートしているので別の処理に飛ばす
+	  game_start.emit("S_to_C_announceMessage");
+    }
+  });
+  //切断したときに送信
+  //connect, message, disconnectは予め用意されているイベント
+  socket.on("disconnect", function () {
+    //alert("disconnect from server");
+    io.sockets.emit("S_to_C_message", {value:"user disconnected"});
+  });
+  
+});
 
 //クライアントからアクションを受け取る窓口
 //socketにはクライアントからのアクションが入っている
@@ -130,6 +161,7 @@ socket.on("C_to_S_game_start", function () {
 	if(share.timer == false) {
 		//タイマーをスタートさせる
 		share.timer = true;
+		console.log("はいりました");
 		//以下のような書き方をすると動かなかった
 		//setTimeout('io.sockets.emit("S_to_C_game_start")', 10000);
 		setTimeout(function(){io.sockets.emit("S_to_C_game_start"), {data:express.session.name}}, 10000);

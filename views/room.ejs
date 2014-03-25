@@ -16,7 +16,29 @@
       }
     </style>
     <!-- ここまでwebFont -->
+    <!-- socket.ioを使えるようにしている -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      //var s = io.connect(); //リモート
+      var s = io.connect('http://localhost:3000/LocalInvaders/room'); //ローカル
     
+      //サーバから受け取るイベント
+      s.on("connect", function () {});  // 接続時
+      s.on("disconnect", function (client) {});  // 切断時
+      s.on("S_to_C_game_start", function() {
+        console.log("moveGamePage");
+        moveGamePage();
+      });
+      s.on("S_to_C_announceMessage", function() {
+      });
+      
+      //ゲーム画面に移動させる
+      function moveGamePage() {
+        //練習
+        //ここにゲーム画面に遷移するコードを書く
+        document.location = "/LocalInvaders/play";
+      }
+    </script>
   </head>
   <body background="/img/skulls.png"> <!-- 壁紙 -->
   
@@ -32,11 +54,16 @@
   </table>
   
   
-  </div>
+  <div id="msg_list" style="height:100px; overflow:auto;"></div>
   
+  </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="/javascripts/bootstrap.min.js"></script>
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/javascripts/mode.js"></script>
+    <script>
+      //このページにユーザ一人でも入ったらタイマーをスタートさせる
+      s.emit("C_to_S_game_start");
+    </script>
   </body>
 </html>
