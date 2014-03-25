@@ -14,6 +14,15 @@ var path = require('path');
 var socketio = require("socket.io"); //ソケット通信
 
 var app = express();
+
+/*
+ * 2014-3-25
+ * 制作：石川
+ * ページ遷移の為に新規に追加した
+ */
+var title = require('./routes/localinvaders').title;
+var room = require('./routes/localinvaders').room;
+
 /*
  * 2014-3-24
  * 制作：石川
@@ -65,6 +74,8 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/chatroom', chat.chatroom);
 app.get('/gelocation_test', geo.gelocation_test);
+app.get('/LocalInvaders/title', title);
+app.get('/LocalInvaders/room', room);
 app.get('/users', user.list);
 
 //ここでサーバを立ち上げている
@@ -80,13 +91,6 @@ process.on('uncaughtException', function(err) {
 
 //サーバとソケットを結びつける
 var io = socketio.listen(server);
-
-/*
- * 2014-3-25
- * 制作：石川
- * Connect から Cookie パーサを借りる
- */
-//var parseCookie = require('connect').utils.parseCookie;
 
 //クライアントからアクションを受け取る窓口
 //socketにはクライアントからのアクションが入っている
@@ -113,7 +117,6 @@ socket.broadcast.emit("S_to_C_message", {value:data.value});
 });
 
 //緯度と経度を全てのユーザに伝える
-//
 socket.on("C_to_S_location", function (data) {
   io.sockets.emit("S_to_C_location", data);
 });
