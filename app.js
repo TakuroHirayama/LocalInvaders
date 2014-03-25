@@ -18,11 +18,12 @@ var app = express();
 /*
  * 2014-3-25
  * 制作：石川
- * ページ遷移する際に行う動作の読み込み
+ * ページ遷移する際に行う動作を格納
  */
-var title = require('./routes/localinvaders').title;
-var room = require('./routes/localinvaders').room;
-var play = require('./routes/localinvaders').play;
+var title  = require('./routes/localinvaders').title;
+var room   = require('./routes/localinvaders').room;
+var play   = require('./routes/localinvaders').play;
+var result = require('./routes/localinvaders').result;
 
 /*
  * 2014-3-24
@@ -71,13 +72,14 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-//routes/index.jsを見に行っている
+//ここで、指定したURLにアクセスした際にどんな動作を行わせるのかを設定している
 app.get('/', routes.index);
 app.get('/chatroom', chat.chatroom);
 app.get('/gelocation_test', geo.gelocation_test);
 app.get('/LocalInvaders/title', title);
 app.get('/LocalInvaders/room', room);
 app.get('/LocalInvaders/play', play);
+app.get('/LocalInvaders/result', result);
 app.get('/users', user.list);
 
 //ここでサーバを立ち上げている
@@ -94,34 +96,55 @@ process.on('uncaughtException', function(err) {
 //サーバとソケットを結びつける
 var io = socketio.listen(server);
 
+//========================== LocalInvader/roomで行われるソケット通信==========================
 /*
  * 2014-3-25
  * 制作：石川
  * room画面でのみ使われるソケット通信
  */
-var game_start = io.of('/LocalInvaders/room').on('connection', function(socket) {
-  console.log('room connected');
+var room_socket = io.of('/LocalInvaders/room').on('connection', function(socket) {
   //メッセージ送信（送信者にも送られる）
   //C_to_Smessageはイベント名
-  socket.on("C_to_S_game_start", function () {
+  socket.on("C_to_S_timer_start", function () {
     if(share.timer == false) {
 	  //タイマーをスタートさせる
 	  share.timer = true;
-	  console.log('timer start');
-	  setTimeout(function(){game_start.emit("S_to_C_game_start")}, 10000);
-	}else{
-	  //タイマーがスタートしているので別の処理に飛ばす
-	  game_start.emit("S_to_C_announceMessage");
-    }
+	  setTimeout(function(){room_socket.emit("S_to_C_game_start")}, 10000);
+	}
   });
   //切断したときに送信
   //connect, message, disconnectは予め用意されているイベント
   socket.on("disconnect", function () {
     //alert("disconnect from server");
-    io.sockets.emit("S_to_C_message", {value:"user disconnected"});
+	room_socket.emit("S_to_C_message", {value:"user disconnected"});
   });
-  
 });
+
+//========================== LocalInvader/roomで行われるソケット通信 終わり==========================
+
+//========================== LocalInvader/playで行われるソケット通信==========================
+/*
+* 2014-3-25
+* 制作：石川
+* play画面でのみ使われるソケット通信
+*/
+var play_socket = io.of('/LocalInvaders/play').on('connection', function(socket) {
+  socket.on("C_to_S_game_start", function () {
+	//次のゲームが始められるようにフラグを折る
+	share.timer = false;
+    setTimeout(function(){play_socket.emit("S_to_C_game_end")}, 10000);
+  });
+  //切断したときに送信
+  //connect, message, disconnectは予め用意されているイベント
+  socket.on("disconnect", function () {
+    //alert("disconnect from server");
+	play_socket.emit("S_to_C_message", {value:"user disconnected"});
+  });
+});
+
+//========================== LocalInvader/playで行われるソケット通信 終わり==========================
+
+
 
 //クライアントからアクションを受け取る窓口
 //socketにはクライアントからのアクションが入っている

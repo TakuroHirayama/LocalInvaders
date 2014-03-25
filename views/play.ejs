@@ -16,11 +16,32 @@
       }
     </style>
     <!-- ここまでwebFont -->
+    <!-- socket.ioを使えるようにしている -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      //var s = io.connect(); //リモート
+      var s = io.connect('http://localhost:3000/LocalInvaders/play'); //ローカル
+    
+      //サーバから受け取るイベント
+      s.on("connect", function () {});  // 接続時
+      s.on("disconnect", function (client) {});  // 切断時
+      s.on("S_to_C_game_end", function() {
+        document.location = "/LocalInvaders/result";
+      });
+    </script>
     
   </head>
   <body background="/img/skulls.png"> <!-- 壁紙 -->
-  
-    <div class="container" style="padding:20px 0">
+    
+     <nav class="navbar navbar-fixed-top"> 
+      <div class="nav">
+        <table class="table table-bordered">
+          <thead>
+            <tr><th class="info">1P</th><th class="success">2P</th><th class="warning">3P</th><th class="danger">4P</th></tr>
+          </thead>
+        </table>
+      </div>
+    </nav>
     
 
     <!----------------------- ここに実際に地図アプリを実装 ------------------------>
@@ -29,7 +50,10 @@
   </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="/javascripts/bootstrap.min.js"></script>
-    <script src="/javascripts/jquery.min.js"></script>
     <script src="/javascripts/mode.js"></script>
+    <script>
+      //このページにユーザが一人でも入ったらタイマーをスタートさせる
+      s.emit("C_to_S_game_start");
+    </script>
   </body>
 </html>
