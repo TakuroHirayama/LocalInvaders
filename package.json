@@ -1,12 +1,16 @@
 {
-  "name": "LocalInvader",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "NODE_PATH=$NODE_PATH:lib node-dev app.js"
-  },
-  "dependencies": {
-    "express": "3.5.0",
-    "ejs": "*"
-  }
+    "name": "LocalInvader",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "NODE_PATH=$NODE_PATH:lib node app.js",
+        "debug": "NODE_PATH=$NODE_PATH:lib NODE_ENV=development node-dev --debug app.js"
+    },
+    "dependencies": {
+        "express": "3.5.0",
+        "ejs": "*",
+        "socket.io": "0.9.16",
+        "mongoose": "3.8.8",
+        "connect-mongo": "0.4.0"
+    }
 }
