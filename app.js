@@ -16,11 +16,19 @@ var socketio = require("socket.io"); //ソケット通信
 var app = express();
 /*
  * 2014-3-24
+ * 制作：石川
  * グローバル変数を実現させるためにlib/share.jsというファイルを用意して読み込む
  * これでshare.timerで扱うことができる
  */
 var share = require('share');
 
+/*
+ * 2014-3-25
+ * 制作：石川
+ * expressにあるMemoryStoreを利用してセッションもメモリに保存する
+ */
+var MemoryStore = express.session.MemoryStore
+, sessionStore = new MemoryStore();
 
 
 // all environments
@@ -32,6 +40,18 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+/*
+ * 2014-3-25
+ * 制作：石川
+ * セッションを用いるために追加、app.routerよりも前に記述しないとダメなのでここに追加
+ */
+//引数はパスフレーズ（秘密文字列）
+app.use(express.cookieParser("Local"));
+//引数はハッシュ化の値と使うstoreを宣言
+app.use(express.session({ 
+    secret: 'Invaders' 
+  , store: sessionStore
+}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -60,6 +80,13 @@ process.on('uncaughtException', function(err) {
 
 //サーバとソケットを結びつける
 var io = socketio.listen(server);
+
+/*
+ * 2014-3-25
+ * 制作：石川
+ * Connect から Cookie パーサを借りる
+ */
+//var parseCookie = require('connect').utils.parseCookie;
 
 //クライアントからアクションを受け取る窓口
 //socketにはクライアントからのアクションが入っている
@@ -91,13 +118,18 @@ socket.on("C_to_S_location", function (data) {
   io.sockets.emit("S_to_C_location", data);
 });
 
+/*
+ * 2014-3-24
+ * 制作：石川
+ * ゲーム画面へ移動するレスポンスを全員に投げる
+ */
 socket.on("C_to_S_game_start", function () {
 	if(share.timer == false) {
 		//タイマーをスタートさせる
 		share.timer = true;
 		//以下のような書き方をすると動かなかった
 		//setTimeout('io.sockets.emit("S_to_C_game_start")', 10000);
-		setTimeout(function(){io.sockets.emit("S_to_C_game_start")}, 10000);
+		setTimeout(function(){io.sockets.emit("S_to_C_game_start"), {data:express.session.name}}, 10000);
 	}else{
 		//タイマーがスタートしているので別の処理に飛ばす
 		io.sockets.emit("S_to_C_announceMessage");

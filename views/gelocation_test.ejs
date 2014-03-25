@@ -22,8 +22,8 @@
     s.on("S_to_C_location", function (data) {
       updateLocation(data);
     });
-    s.on("S_to_C_game_start", function() {
-      moveGamePage();
+    s.on("S_to_C_game_start", function(data) {
+      moveGamePage(data);
     });
     s.on("S_to_C_announceMessage", function() {
       $("#msg_list").prepend("<div class='location'>" + "既にタイマーはスタートしています</div>");
@@ -95,9 +95,9 @@
      * 作成：石川
      * 300秒後にゲーム画面に移動する
      */
-    function moveGamePage() {
+    function moveGamePage(data) {
       //練習
-      $("#msg_list").prepend("<div class='location'>" + "ゲーム画面に移動しました</div>");
+      $("#msg_list").prepend("<div class='location'>" + "ゲーム画面に移動しました" + "</div>");
       //ここにゲーム画面に遷移するコードを書く
     }
     
