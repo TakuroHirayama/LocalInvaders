@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LocalInvaders</title>
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="stylesheets/style.css" rel="stylesheet">
+	<link href="stylesheets/bootswatch.css" rel="stylesheet">
+	<!-- ここからwebFont -->
+	<link href='http://fonts.googleapis.com/css?family=Lemon' rel='stylesheet' type='text/css'>
+    <style>
+      body {
+        font-family: 'Lemon', cursive;
+      }
+    </style>
+    <!-- ここまでwebFont -->
+ 
+  </head>
+  <body background="img/skulls.png"> <!-- 壁紙 -->
+
+    
+	<div class="container" style="padding:20px 0">
+		<p style="text-align:center; font-size:100px">Local Invaders</p> <!-- タイトル -->
+  
+  		<!-- ここから遊ぶボタンの詳細 -->
+  		<div style="text-align:center; padding:60px">
+		<a data-toggle="modal" href="#start" class="btn btn-success btn-lg"  style="margin:30px; font-size:20px">遊ぶ</a><br/>
+		<a data-toggle="modal" href="#modeSelect" class="btn btn-info btn-lg" style="margin:30px; font-size:20px">モード選択</a>
+    	
+    	<div class="modal fade" id="start">
+    		<div class="modal-dialog">
+    			<div class="modal-content">
+    				<div class="modal-header">
+    					<button class="close" data-dismiss="modal">&times;</button>
+    					<h4 class="modal-title">遊び方</h4>
+    				</div>
+    				<div class="modal-body">
+    					<ol style="text-align:left">
+    						<li>このゲームは最大4人で同時に遊びます。</li>
+    						<li>ゲーム開始と同時にエリアが発生します。</li>
+    						<li>そのエリアめがけてひたすら走ってください。</li>
+    						<li>最初にエリアに到達した人は得点し、その瞬間に新しいエリアが発生します。</li>
+    						<li>これを10回プレイし、得点が多い人が勝ちです。</li>
+    					</ol>
+    				</div>
+    				<div class="modal-footer">
+					    	<form class="form-inline">
+					    	  <div class="form-group">
+					    	  	<label class="control-label" for="playername">プレイヤーネームを入力してゲームに参加</label>
+					    	  	<input type="text" id="playername" class="form-control" placeholder="playername">
+					    	  </div>
+					    	  <div class="form-group">
+					    	  	<input type="submit" value="参加する" class="btn btn-warning" style="font-size:20px;" onclick="location.href='../hackU2.html'">
+					    	  </div>
+					    	</form>
+					    	<br>
+					    	<!--<a href="./hackU2.html"><button type="submit" class="btn btn-warning" style="font-size:20px" >参加する</button></a>-->
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    	<!-- ここまで遊ぶボタンの詳細 -->
+    	
+    	<!-- ここからモード選択ボタン -->
+    	<div class="modal fade" id="modeSelect">
+    		<div class="modal-dialog">
+    			<div class="modal-content">
+    				<div class="modal-header">
+    					<button class="close" data-dismiss="modal">&times;</button>
+    					<h4 class="modal-title">モード選択をします</h4>
+    				</div>
+    				<div class="modal-body">
+    					<button class="btn btn-primary btn-lg" style="font-size:20px"><i class="glyphicon glyphicon-flag"></i>エリア争奪戦モード</button>
+    					<button class="btn btn-primary btn-lg" style="font-size:20px"><i class="glyphicon glyphicon-tree-conifer"></i>宝探しモード</button>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    	</div>
+    	<!-- ここまでモード選択ボタン -->
+	</div>
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="javascripts/bootstrap.min.js"></script>
+    <script src="javascripts/jquery.min.js"></script>
+    <script src="javascripts/mode.js"></script>
+  </body>
+</html>
