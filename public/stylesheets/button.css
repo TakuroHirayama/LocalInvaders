@@ -1,0 +1,29 @@
+@media only screen and (min-width: 769px) and (max-width: 979px){  /*デバイスの横幅が769px以上979px以下の場合*/
+	img{
+		width:50%
+	}
+}
+
+@media only screen and (min-width: 569px) and (max-width: 768px){
+	img{
+		width:50%
+	}
+}
+
+@media only screen and (min-width: 321px) and (max-width: 568px) {  /*デバイスの横幅が321px以上768px以下の場合*/
+    img{
+        width:80%;
+    }
+}
+ 
+@media only screen and (min-width: 160px) and (max-width: 320px) {  
+    img{
+        Width:120%;
+    } 
+}
+
+@media only screen and (max-width: 159px) {  
+    img{
+        Width:180%;
+    }
+}
