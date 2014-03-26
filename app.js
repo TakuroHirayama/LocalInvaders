@@ -36,6 +36,8 @@ var result = require('./routes/localinvaders').result;
  */
 var share = require('lib/share');
 
+var Area = require('models/Area').Area;
+
 //mongodb接続
 mongoose.connect('mongodb://uec_death:localinvadorsdeathyo@oceanic.mongohq.com:10054/local_invader', function(err) {
     if (err) {
@@ -137,8 +139,15 @@ var room_socket = io.of('/room').on('connection', function(socket) {
             //タイマーをスタートさせる
             share.timer = true;
             setTimeout(function() {
-                room_socket.emit("S_to_C_game_start");
-                //ここでroomからplay画面へ移行する時間を設定(ms)
+                var location = share.new_area();
+                var area = new Area(location);
+                area.save(function(err, area) {
+                    //次のゲームが始められるようにフラグを折る
+                    share.timer = false;
+                    share.game_started = true;
+                    room_socket.emit("S_to_C_game_start");
+                    //ここでroomからplay画面へ移行する時間を設定(ms)
+                });
             }, 3000);
         }
     });
@@ -153,34 +162,6 @@ var room_socket = io.of('/room').on('connection', function(socket) {
 });
 
 //========================== LocalInvader/roomで行われるソケット通信 終わり==========================
-
-//========================== LocalInvader/playで行われるソケット通信==========================
-/*
- * 2014-3-25
- * 制作：石川
- * play画面でのみ使われるソケット通信
- */
-var play_socket = io.of('/play').on('connection', function(socket) {
-    socket.on("C_to_S_game_start", function() {
-        //次のゲームが始められるようにフラグを折る
-        share.timer = false;
-        //setTimeout(function(){play_socket.emit("S_to_C_game_end")}, 30000);
-        var location = share.new_area();
-        play_socket.emit("S_to_C_create_new_area", {
-            location : location
-        });
-    });
-    //切断したときに送信
-    //connect, message, disconnectは予め用意されているイベント
-    socket.on("disconnect", function() {
-        //alert("disconnect from server");
-        play_socket.emit("S_to_C_message", {
-            value : "user disconnected"
-        });
-    });
-});
-
-//========================== LocalInvader/playで行われるソケット通信 終わり==========================
 
 //クライアントからアクションを受け取る窓口
 //socketにはクライアントからのアクションが入っている
@@ -250,30 +231,38 @@ io.sockets.on("connection", function(socket) {
     });
 });
 
+//========================== LocalInvader/playで行われるソケット通信==========================
+/*
+* 2014-3-26
+* 制作：石川,hiraro
+* play画面でのみ使われるソケット通信
+*/
+
 //ゲームに関するメッセージング
-var game = io.set("heartbeats", true).of("/game");
+var game = io.set("heartbeats", true).of("/play");
 game.on("connection", function(socket) {
     //参加時の処理
     var sessid = socket.transport.sessid;
-
     socket.on("locationUpdate", function(data) {
         //位置情報定期更新
+        //TODO:ここでエリア攻略判定する
+        //TODO:はいってたら新規エリア作成ー＞emit
+        //TODO:とった人のポイント増やす
+        socket.emit("newArea", location);
         socket.broadcast.emit("locationUpdate", data);
     }).on("newPlayer", function(data, callback) {
         //新規プレイヤー追加
+        //TODO:player_idとsocketioのsessidを紐付けてDBに
         socket.broadcast.emit("newPlayer", data);
         callback();
-    }).on("playerDie", function(data) {
-        //プレイヤー死亡
-    }).on("newTarget", function(data) {
-        //新エリア出現
-    }).on("clearTarget", function(data) {
-        //エリア消滅
     }).on("disconnect", function() {
         //死亡宣告通知
+        //TODO:socketioのsessidからplayer_idをひもづける
         socket.broadcast.emit("playerDie", {
             id : sessid
+            //TODO:何を送るか
         });
     });
 });
+//========================== LocalInvader/playで行われるソケット通信 終わり==========================
 
