@@ -1,0 +1,140 @@
+@media only screen and (min-width: 980px){
+	#startbuttondesign a{
+		font-size:20px;
+	}
+	#startbuttondesign2 a{
+		font-size:22px;
+	}
+	#titledesign font{
+		font-size:120px;
+	}
+}
+
+@media only screen and (min-width: 769px) and (max-width: 979px){  /*デバイスの横幅が769px以上979px以下の場合*/
+	img{
+		width:50%;
+		padding-top:80px;
+	}
+	#titleLI{
+		width:100%;
+	}
+	#titleback{
+		padding-top:0px;
+	}
+	#startbuttondesign a{
+		font-size:12px;
+	}
+	#startbuttondesign2 a{
+		font-size:18px;
+	}
+	#titledesign font{
+		font-size:70px;
+	}
+}
+
+@media only screen and (min-width: 569px) and (max-width: 768px){
+	img{
+		width:50%;
+		padding-top:100px;
+	}
+	#titleLI{
+		width:100%;
+	}
+	#titleback{
+		padding-top:0px;
+	}
+	#startbutton{
+		width:150px;
+	}
+	#startbuttondesign a{
+		font-size:12px;
+	}
+	#startbuttondesign2 a{
+		font-size:18px;
+	}
+	#titledesign font{
+		font-size:50px;
+	}
+}
+
+@media only screen and (min-width: 321px) and (max-width: 568px) {  
+    img{
+        width:80%;
+        padding-top:80px;
+        
+    }
+    #titleLI{
+		width:110%;
+	}
+	#titleback{
+		padding-top:0px;
+	}
+	#startbuttondesign a{
+		font-size:12px;
+	}
+	#startbuttondesign2 a{
+		font-size:18px;
+	}
+	#titledesign font{
+		font-size:50px;
+	}
+}
+ 
+@media only screen and (min-width: 240px) and (max-width: 320px) {  
+    img{
+        width:130%;
+        padding-top:50px;
+    } 
+    #titleLI{
+		width:100%;
+	}
+	#titleback{
+		padding-top:0px;
+		width:110%;
+	}
+	#resulttable{
+		padding-top:0px;
+	}
+	#startbuttondesign a{
+		font-size:12px;
+	}
+	#startbuttondesign2 a{
+		font-size:18px;
+	}
+	#titledesign font{
+		font-size:30px;
+	}
+}
+
+@media only screen and (min-width: 160px) and (max-width: 239px) {  
+    img{
+        width:100%;
+        padding-top:50px;
+    } 
+    #titleLI{
+		width:100%;
+	}
+	#titleback{
+		padding-top:0px;
+		width:110%;
+	}
+	#resulttable{
+		padding-top:0px;
+	}
+	#startbutton{
+		width:50px;
+	}
+	#startbuttondesign a{
+		font-size:12px;
+	}
+	#startbuttondesign2 a{
+		font-size:18px;
+	}
+}
+
+@media only screen and (max-width: 159px) {  
+    img{
+        Width:180%;
+    }
+    
+}

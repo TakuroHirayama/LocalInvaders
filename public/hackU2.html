@@ -16,23 +16,32 @@
       }
     </style>
     <!-- ここまでwebFont -->
+    <link href="stylesheets/button.css" rel="stylesheet">
     
   </head>
   <body background="img/skulls.png"> <!-- 壁紙 -->
   
-  <!-- ここから注意文 -->
-  <div class="alert alert-warning">
-  		<button class="close" data-dismiss="alert"></button>
-    	1人目が参加してから300秒後、またはプレイヤーが4人集まったら、プレイ画面に移ります。
-  </div>
-  <!-- ここまで注意文 -->
+	<!-- ここから注意文 -->
+		<nav class="navbar navbar-fixed-top"> 
+    		<div class="nav">
+    			<table class="table table-bordered">
+    				<thead>
+		  				<tr><div class="alert alert-warning">
+  							<button class="close" data-dismiss="alert"></button>
+    						1人目が参加してから300秒後、またはプレイヤーが4人集まったら、プレイ画面に移ります。
+    					</div></tr>
+		  			</thead>
+    			</table>
+    		</div>
+		</nav>
+	<!-- ここまで注意文 -->
   
-  	<div class="container" style="padding:20px 0">
+  	<div class="container" style="padding:50px 0">
   		
   	
   	<!-------------------- ここにプレイヤー参加画面の実装をする ---------------------->
 	<table class="table table-bordered table-striped">
-		<tbody style="font-size:50px" bgcolor="white">	
+		<tbody style="font-size:25px" bgcolor="white">	
 			<tr><td><font color="brown"><strong>player 1</strong></font></td></tr>
 	        <tr><td><font color="brown"><strong>player 2</strong></font></td></tr>
 	        <tr><td><font color="brown"><strong>player 3</strong></font></td></tr>
