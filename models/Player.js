@@ -1,9 +1,15 @@
 var mongoose = require('mongoose');
-var Schema=mongoose.Schema;
-var userSchema = new Schema({
+var Schema = mongoose.Schema;
+var playerSchema = new Schema({
     name : {
         type : String,
         required : "名無しの権兵衛"
+    },
+    player_id : {
+        type : Number,
+        index : {
+            unique : true
+        }
     },
     position : {
         latitude : Number,
@@ -18,12 +24,12 @@ var userSchema = new Schema({
     }
 });
 //インスタンスメソッド
-userSchema.methods.foo = function() {
+playerSchema.methods.foo = function() {
     console.log("foo");
 };
 //クラスメソッド
-userSchema.static.bar = function() {
+playerSchema.static.bar = function() {
     console.log("bar");
 };
-mongoose.model('User', userSchema);
-exports.User = mongoose.model("User");
+mongoose.model('Player', playerSchema);
+exports.Player = mongoose.model("Player");

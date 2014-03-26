@@ -1,10 +1,10 @@
-//var fs = require('fs');
-var User = require('../models/User').User;
+var Player = require('../models/Player').Player;
+const MAX_PLAYER_COUNT=4;
 
 exports.main = function(req, res) {
-    //自分含めての最新ユーザ3人時間降順
-    User.find({}).sort("-date").limit(4).exec(function(err, docs) {
-        if (err || docs.length > 3 /*|| !req.session.name*/) {
+    //自分含めての最新ユーザ3人をdate降順で
+    Player.find({}).sort("-date").limit(MAX_PLAYER_COUNT).exec(function(err, docs) {
+        if (err || docs.length > MAX_PLAYER_COUNT /*|| !req.session.name*/) {
             //遊べないお
             //TODO:エラーページ表示
             res.redirect("/");
@@ -29,12 +29,12 @@ exports.testFormPost = function(req, res) {
     if (e) {
         errors.push(e);
     } else {
-        var user = new User({
+        var player = new Player({
             name : postData.name
         });
-        user.save(function(err, product) {
+        player.save(function(err, product) {
             if (!err) {
-                req.session.id = user._id;
+                req.session.id = player._id;
                 req.session.name = product.get("name");
                 res.redirect("/game");
                 return;
@@ -55,23 +55,3 @@ var __validate = function(req) {
         return "no name, f@ck U.";
     }
 };
-
-// var __validateImageData = function(req) {
-// var iconFile = req.files.icon;
-// if (!iconFile) {
-// return "no image";
-// }
-// if (iconFile.type != "image/jpeg" && iconFile.type != "image/gif" && iconFile.type != "image/png") {
-// return "invalid image type";
-// }
-// };
-// var e = __validateImageData(req);
-// if (e) {
-// errors.push(e);
-// } else {
-// var iconFile = req.files.icon;
-// var binIcon = fs.readFileSync(iconFile.path);
-// var encodedIcon = new Buffer(binIcon).toString("base64");
-// var dataUriIcon = "data:" + iconFile.type + ";base64," + encodedIcon;
-// }
-
