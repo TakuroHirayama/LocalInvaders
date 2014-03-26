@@ -2,7 +2,7 @@ var Player = require('../models/Player').Player;
 const MAX_PLAYER_COUNT=4;
 
 exports.main = function(req, res) {
-    //自分含めての最新ユーザ3人をdate降順で
+    //自分含めての最新ユーザ4人をdate降順で
     Player.find({}).sort("-date").limit(MAX_PLAYER_COUNT).exec(function(err, docs) {
         if (err || docs.length > MAX_PLAYER_COUNT /*|| !req.session.name*/) {
             //遊べないお
