@@ -8,6 +8,12 @@
 	#titledesign font{
 		font-size:120px;
 	}
+	#asobudesign font{
+		font-size:30px;	
+	}
+	#gototitledesign font{
+		font-size:30px;
+	}
 }
 
 @media only screen and (min-width: 769px) and (max-width: 979px){  /*デバイスの横幅が769px以上979px以下の場合*/
@@ -29,6 +35,12 @@
 	}
 	#titledesign font{
 		font-size:70px;
+	}
+	#asobudesign font{
+		font-size:25px;	
+	}
+	#gototitledesign font{
+		font-size:20px;
 	}
 }
 
@@ -55,6 +67,12 @@
 	#titledesign font{
 		font-size:50px;
 	}
+	#asobudesign font{
+		font-size:22px;	
+	}
+	#gototitledesign font{
+		font-size:20px;
+	}
 }
 
 @media only screen and (min-width: 321px) and (max-width: 568px) {  
@@ -77,6 +95,12 @@
 	}
 	#titledesign font{
 		font-size:50px;
+	}
+	#asobudesign font{
+		font-size:20px;	
+	}
+	#gototitledesign font{
+		font-size:20px;
 	}
 }
  
@@ -104,6 +128,12 @@
 	#titledesign font{
 		font-size:30px;
 	}
+	#asobudesign font{
+		font-size:15px;	
+	}
+	#gototitledesign font{
+		font-size:20px;
+	}
 }
 
 @media only screen and (min-width: 160px) and (max-width: 239px) {  
@@ -130,7 +160,12 @@
 	#startbuttondesign2 a{
 		font-size:18px;
 	}
-}
+	#asobudesign font{
+		font-size:18px;	
+	}
+	#gototitledesign font{
+		font-size:20px;
+	}
 
 @media only screen and (max-width: 159px) {  
     img{

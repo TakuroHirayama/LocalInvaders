@@ -57,7 +57,6 @@ exports.room = function(req, res) {
     //名前入力済みか
     if (!req.session.player_id) {
         //遊べないお
-        //TODO:エラーページ表示
         res.redirect("/");
         return;
     }
@@ -65,7 +64,7 @@ exports.room = function(req, res) {
     Player.find({}).sort("-date").limit(MAX_PLAYER_COUNT).exec(function(err, docs) {
         if (err || docs.length > MAX_PLAYER_COUNT) {
             //遊べないお
-            //TODO:エラーページ表示
+            //4人用なんだ
             res.redirect("/");
             return;
         }
@@ -82,6 +81,8 @@ exports.room = function(req, res) {
 exports.play = function(req, res) {
 	Player.find({}).sort("-date").limit(MAX_PLAYER_COUNT).exec(function(err, docs) {
 		res.render('play', {
+		    player_id:req.session.player_id,
+		    name:req.session.name,
             players : docs
         });
 	});
