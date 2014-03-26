@@ -1,69 +1,80 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LocalInvaders</title>
-    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
-    <link href="/stylesheets/style.css" rel="stylesheet">
-    <link href="/stylesheets/bootswatch.css" rel="stylesheet">
-    <!-- ここからwebFont -->
-    <link href='http://fonts.googleapis.com/css?family=Lemon' rel='stylesheet' type='text/css'>
-    <style>
-      body {
-        font-family: 'Lemon', cursive;
-      }
-    </style>
-    <!-- ここまでwebFont -->
-    <!-- socket.ioを使えるようにしている -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      //var s = io.connect(); //リモート
-      var s = io.connect('http://localhost:3000/LocalInvaders/room'); //ローカル
-    
-      //サーバから受け取るイベント
-      s.on("connect", function () {});  // 接続時
-      s.on("disconnect", function (client) {});  // 切断時
-      s.on("S_to_C_game_start", function() {
-        console.log("moveGamePage");
-        moveGamePage();
-      });
-      s.on("S_to_C_announceMessage", function() {
-      });
-      
-      //ゲーム画面に移動させる
-      function moveGamePage() {
-        //練習
-        //ここにゲーム画面に遷移するコードを書く
-        document.location = "/LocalInvaders/play";
-      }
-    </script>
-  </head>
-  <body background="/img/skulls.png"> <!-- 壁紙 -->
-  
-    <div class="container" style="padding:20px 0">
-    <!-------------------- ここにプレイヤー参加画面の実装をする ---------------------->
-  <table class="table table-bordered table-striped">
-    <tbody style="font-size:50px" bgcolor="white">  
-      <tr><td><font color="brown"><strong><%= name %></strong></font></td></tr>
-          <tr><td><font color="brown"><strong>player 2</strong></font></td></tr>
-          <tr><td><font color="brown"><strong>player 3</strong></font></td></tr>
-          <tr><td><font color="brown"><strong>player 4</strong></font></td></tr>
-    </tbody>
-  </table>
-  
-  
-  <div id="msg_list" style="height:100px; overflow:auto;"></div>
-  
-  </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="/javascripts/bootstrap.min.js"></script>
-    <script src="/javascripts/jquery.min.js"></script>
-    <script src="/javascripts/mode.js"></script>
-    <script>
-      //このページにユーザ一人でも入ったらタイマーをスタートさせる
-      s.emit("C_to_S_game_start");
-    </script>
-  </body>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>LocalInvaders</title>
+        <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+        <link href="/stylesheets/style.css" rel="stylesheet">
+        <link href="/stylesheets/bootswatch.css" rel="stylesheet">
+        <!-- ここからwebFont -->
+        <link href='http://fonts.googleapis.com/css?family=Lemon' rel='stylesheet' type='text/css'>
+        <style>
+            body {
+                font-family: 'Lemon', cursive;
+            }
+        </style>
+        <!-- ここまでwebFont -->
+        <!-- socket.ioを使えるようにしている -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var s = io.connect('/room');
+
+            //サーバから受け取るイベント
+            s.on("connect", function() {
+            });
+            // 接続時
+            s.on("disconnect", function(client) {
+            });
+            // 切断時
+            s.on("S_to_C_game_start", function() {
+                console.log("moveGamePage");
+                moveGamePage();
+            });
+            s.on("S_to_C_announceMessage", function() {
+            });
+
+            //ゲーム画面に移動させる
+            function moveGamePage() {
+                //練習
+                //ここにゲーム画面に遷移するコードを書く
+                document.location = "/LocalInvaders/play";
+            }
+        </script>
+    </head>
+    <body background="/img/skulls.png">
+        <!-- 壁紙 -->
+
+        <div class="container" style="padding:20px 0">
+            <!-------------------- ここにプレイヤー参加画面の実装をする ---------------------->
+            <table class="table table-bordered table-striped">
+                <tbody style="font-size:50px" bgcolor="white">
+                    <% for(var i=0;i < players.length;i++) { %>
+                    <% if(players[i].get("player_id")===me.player_id){ %>
+                    <tr>
+                        <!-- TODO:自分表示をかっこ良くして -->
+                        <td><font color="brown"><strong>You：<%= players[i].get("name") %></strong></font></td>
+                    </tr>
+                    <% }else{ %>
+                    <tr>
+                        <td><font color="brown"><strong><%= players[i].get("name") %></strong></font></td>
+                    </tr>
+                    <% } %>
+                    <% } %>
+                </tbody>
+            </table>
+
+            <div id="msg_list" style="height:100px; overflow:auto;"></div>
+
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="/javascripts/bootstrap.min.js"></script>
+        <script src="/javascripts/jquery.min.js"></script>
+        <script src="/javascripts/mode.js"></script>
+        <script>
+            //このページにユーザ一人でも入ったらタイマーをスタートさせる
+            s.emit("C_to_S_game_start");
+        </script>
+    </body>
 </html>

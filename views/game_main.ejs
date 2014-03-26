@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>（仮）</title>
+        <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+    </head>
+    <body style="padding:50px 0px">
+        <nav id="header" class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="javascript:void 0"><%= locals.me.name||""+" "+locals.me.id||"" %></a>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div id="map" class="col-xs-12 col-md-12"></div>
+            </div>
+        </div>
+        <input type="hidden" id="me_name" value="<%= locals.me.name||"" %>"/>
+        <input type="hidden" id="me_id" value="<%= locals.me.id||"" %>"/>
+        <script type="text/javascript" src="/javascripts/jquery.min.js" ></script>
+        <script type="text/javascript" src="/javascripts/bootstrap.min.js" ></script>
+        <script type="text/javascript" charset="utf-8" src="//js.api.olp.yahooapis.jp/OpenLocalPlatform/V1/jsapi?appid=dj0zaiZpPUlGUWE3N0JZTm5icSZzPWNvbnN1bWVyc2VjcmV0Jng9MGM-"></script>
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/javascripts/Player.js"></script>
+        <script type="text/javascript" src="/javascripts/Target.js"></script>
+        <script type="text/javascript" src="/javascripts/Map.js"></script>
+        <script type="text/javascript">
+            const LOCATION_UPDATE_INTERVAL = 5000;
+            $(function() {
+                //動作環境チェック
+                if (!navigator.geolocation) {
+                    alert("GeoLocationAPIに対応していないため遊べません");
+                    throw new Error("GeoLocationAPIに対応していない環境です");
+                }
+
+                //地図描画について
+                //画面いっぱいに地図を広げる
+                var $doc = $(document);
+                $("#map").css('height', $doc.height() - $("#header").height()).css('width', $doc.width());
+                //マーカー等を設定
+                //TODO:getする
+                var me = new Player({
+                    name : $("#me_name").val(),
+                    id : $("#me_id").val()
+                });
+                var players = [];
+                var targets = [Target.DEN2_DIE];
+                var map = new Map();
+                //とりあえず書かないと呼び出しの依存性循環…
+                map.drawMap(Target.DEN2_DIE.position);
+                map.addObjects(players);
+                map.addObjects(targets);
+                map.addObject(me);
+
+                //socket.ioのconnectionとgeolocationの位置取得が非同期のため細工
+                var connectionDeferred = new $.Deferred();
+                //socket.ioについて
+                var socketio = io.connect("/game", {
+                    "reconnect" : true,
+                    "force new connection" : true
+                });
+                socketio.on("connect", function(data) {
+                    //接続時
+                    //newPlayerメッセージ排出
+                    this.emit("newPlayer", me, function() {
+                        //確実に位置情報を送るために…
+                        connectionDeferred.resolve();
+                    });
+                }).on("disconnect", function(data) {
+                    //切れてちゃ、なにもできない
+                    //TODO:再接続について
+                    map.removeObject(me);
+                }).on("locationUpdate", function(data) {
+                    //定期位置アップデート
+                    $.each(players, function(i, v) {
+                        if (v.id === data.id) {
+                            v.setPosition(data).setPositionAccuracy(data);
+                        }
+                    });
+                }).on("newPlayer", function(data) {
+                    //新プレイヤー参加
+                    var newPlayer = new Player(data);
+                    players.push(newPlayer);
+                    map.addObject(newPlayer);
+                }).on("playerDie", function(data) {
+                    //プレイヤー消失
+                    $.each(players, function(i, v) {
+                        if (v.id === data.id) {
+                            players.splice(i, 1);
+                        }
+                    });
+                    map.removeObject(data);
+                });
+
+                //GeoLocationについて
+                var watchId = navigator.geolocation.watchPosition(function(position) {
+                    var p = {
+                        id : socketio.socket.sessionid,
+                        latitude : position.coords.latitude,
+                        longitude : position.coords.longitude,
+                        accuracy : position.accuracy
+                    };
+                    //表示している地図上の位置更新
+                    me.setPosition(p);
+                    //位置情報をブロードキャスト（細工済み）
+                    connectionDeferred.promise().then(function() {
+                        socketio.emit("locationUpdate", p);
+                        console.log(p);
+                    });
+                });
+
+            });
+        </script>
+    </body>
+</html>

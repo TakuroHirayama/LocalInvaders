@@ -1,0 +1,9 @@
+<form action="/game/form" method="post" enctype="multipart/form-data">
+    <% if(locals.errors){ %>
+        <% for(var i=0;i<locals.errors.length;i++){ %>
+            <%= locals.errors[i]%>
+        <% } %>
+    <% } %>
+    <input type="text" name="name" value="<%= locals.name||"" %>" />
+    <input type="submit" value="送信" />
+</form>

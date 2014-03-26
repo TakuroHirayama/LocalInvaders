@@ -16,19 +16,21 @@
       }
     </style>
     <!-- ここまでwebFont -->
- 
+
   </head>
   <body background="/img/skulls.png"> <!-- 壁紙 -->
 
-    
+
   <div class="container" style="padding:20px 0">
-    <p style="text-align:center; font-size:100px"><font color="brown"><strong>Local Invaders</strong></font></p> <!-- タイトル -->
-  
+    <img src="/img/title.png" width="100%" max-width="100%" height="auto" alt="title">
       <div style="text-align:center; padding:60px">
+         <% if(locals.error){ %>
+                <div><%= locals.error%></div>
+         <% } %>
         <!-- ここから遊ぶボタン -->
-      <a data-toggle="modal" href="#start" class="btn btn-danger btn-lg" style="margin:30px; font-size:30px">遊ぶ</a>
+      <a data-toggle="modal" href="#start"><img src="/img/asobu.gif" width="100%" max-width="100%" height="auto" alt="asobu"></a>
         <!-- ここまで遊ぶボタン -->
-        
+
         <!-- ここからモード選択 -->
         <div class="modal fade" id="start">
           <div class="modal-dialog">
@@ -45,7 +47,7 @@
           </div>
         </div>
         <!-- ここまでモード選択 -->
-        
+
         <!-- ここからエリア争奪戦モード -->
         <div class="modal fade" id="startAreaGame">
           <div class="modal-dialog">
@@ -66,15 +68,15 @@
               <div class="modal-footer">
                 <!--
                   2014-3-25
-                  location.hrefだと上手く動かなかったので、formタグにactionを追加することで解決した 
+                  location.hrefだと上手く動かなかったので、formタグにactionを追加することで解決した
                   -->
-                  <form class="form-inline" action="/LocalInvaders/room" method="GET">
+                  <form class="form-inline" action="/title" method="post">
                     <div class="form-group">
                       <label class="control-label" for="playername">プレイヤーネームを入力してゲームに参加</label>
-                      <input type="text" id="playername" name="playername" class="form-control" placeholder="playername">
+                      <input type="text" id="playername" name="playername" class="form-control" placeholder="playername" />
                     </div>
                     <div class="form-group">
-                      <input type="submit" value="参加する" class="btn btn-warning" style="font-size:20px;">
+                      <input type="submit" value="参加する" class="btn btn-warning" style="font-size:20px;" />
                     </div>
                   </form>
                   <br>
@@ -83,8 +85,8 @@
             </div>
           </div>
         </div>
-      <!-- ここまでエリア争奪戦モード -->      
-      
+      <!-- ここまでエリア争奪戦モード -->
+
           <!-- ここから宝探しモード-->
         <div class="modal fade" id="startTreasureGame">
           <div class="modal-dialog">
@@ -106,8 +108,8 @@
               <div class="modal-footer">
                   <form class="form-inline" action="/LocalInvaders/room">
                     <div class="form-group">
-                      <label class="control-label" for="playername">プレイヤーネームを入力してゲームに参加</label>
-                      <input type="text" id="playername" name="playername" class="form-control" placeholder="playername">
+                      <label class="control-label" for="playername">プレイヤーネームを入力</label>
+                      <input type="text" id="playername" name="playername" class="form-control" placeholder="playername" />
                     </div>
                     <div class="form-group">
                       <input type="submit" value="参加する" class="btn btn-warning" style="font-size:20px;">
@@ -128,7 +130,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="/javascripts/bootstrap.min.js"></script>
-    <script src="/javascripts/jquery.min.js"></script>
     <script src="/javascripts/mode.js"></script>
   </body>
 </html>
