@@ -1,5 +1,6 @@
 var Player = require('../models/Player').Player;
 var mongoose = require('mongoose');
+var start_game = require('../lib/share').getStartGame();
 const MAX_PLAYER_COUNT = 4;
 
 exports.title = function(req, res) {
@@ -67,7 +68,11 @@ exports.room = function(req, res) {
 };
 
 exports.play = function(req, res) {
-    res.render('play');
+	Player.find({}).sort("-date").limit(MAX_PLAYER_COUNT).exec(function(err, docs) {
+		res.render('play', {
+            players : docs
+        });
+	});
 };
 
 //管理用

@@ -19,7 +19,7 @@
     <!-- socket.ioを使えるようにしている -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      var s = io.connect('/LocalInvaders/play'); //ローカル
+      var s = io.connect('/play'); //ローカル
     
       //サーバから受け取るイベント
       s.on("connect", function () {});  // 接続時
@@ -28,7 +28,7 @@
         createNewArea(location);
       });
       s.on("S_to_C_game_end", function() {
-        document.location = "/LocalInvaders/result";
+        document.location = "/result";
       });
       
       //新しいエリアを生成する
@@ -58,8 +58,20 @@
      <nav class="navbar navbar-fixed-top"> 
       <div class="nav">
         <table class="table table-bordered">
-          <thead>
-            <tr><th class="info">1P</th><th class="success">2P</th><th class="warning">3P</th><th class="danger">4P</th></tr>
+          <thead>              
+            <tr>
+              <% for(var i=0;i < players.length;i++) { %>
+                <% if(i === 0) { %>
+                  <th class="info"><%= players[i].get("name") %></th>
+                <% }else if(i === 1) { %>
+                  <th class="success"><%= players[i].get("name") %></th>
+                <% }else if(i === 2) { %>
+                  <th class="warning"><%= players[i].get("name") %></th>
+                <% }else if(i === 3) { %>
+                  <th class="danger"><%= players[i].get("name") %></th>
+                <% } %>
+              <% } %>
+            </tr>
           </thead>
         </table>
       </div>
@@ -74,7 +86,7 @@
     <script src="/javascripts/bootstrap.min.js"></script>
     <script src="/javascripts/mode.js"></script>
     <script>
-      //このページにユーザが一人でも入ったらタイマーをスタートさせる
+      //このページに飛んできたら、ゲームタイマーを起動させる
       s.emit("C_to_S_game_start");
     </script>
   </body>
