@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LocalInvaders</title>
-    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
-    <link href="/stylesheets/style.css" rel="stylesheet">
-    <link href="/stylesheets/bootswatch.css" rel="stylesheet">
-    <!-- ここからwebFont -->
-    <link href='http://fonts.googleapis.com/css?family=Lemon' rel='stylesheet' type='text/css'>
-    <style>
-      body {
-        font-family: 'Lemon', cursive;
-      }
-    </style>
-    <!-- ここまでwebFont -->
-    <!-- socket.ioを使えるようにしている -->
-    <script src="/socket.io/socket.io.js"></script>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>LocalInvaders</title>
+        <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+        <link href="/stylesheets/style.css" rel="stylesheet">
+        <link href="/stylesheets/bootswatch.css" rel="stylesheet">
+        <!-- ここからwebFont -->
+        <link href='http://fonts.googleapis.com/css?family=Lemon' rel='stylesheet' type='text/css'>
+        <style>
+            body {
+                font-family: 'Lemon', cursive;
+            }
+        </style>
+        <!-- ここまでwebFont -->
+        <!-- socket.ioを使えるようにしている -->
+        <script src="/socket.io/socket.io.js"></script>
 
-  </head>
-  <body background="/img/skulls.png"> <!-- 壁紙 -->
+    </head>
+    <body background="/img/skulls.png">
+        <!-- 壁紙 -->
 
-     <nav class="navbar navbar-fixed-top">
-      <div class="nav">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <% for(var i=0;i < players.length;i++) { %>
-                <% if(i === 0) { %>
-                  <th class="info"><%= players[i].get("name") %></th>
-                <% }else if(i === 1) { %>
-                  <th class="success"><%= players[i].get("name") %></th>
-                <% }else if(i === 2) { %>
-                  <th class="warning"><%= players[i].get("name") %></th>
-                <% }else if(i === 3) { %>
-                  <th class="danger"><%= players[i].get("name") %></th>
-                <% } %>
-              <% } %>
-            </tr>
-          </thead>
-        </table>
-      </div>
-    </nav>
+        <nav class="navbar navbar-fixed-top">
+            <div class="nav">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <% for(var i=0;i < players.length;i++) { %>
+                            <% if(i === 0) { %>
+                            <th class="info"><%= players[i].get("name") %></th>
+                            <% }else if(i === 1) { %>
+                            <th class="success"><%= players[i].get("name") %></th>
+                            <% }else if(i === 2) { %>
+                            <th class="warning"><%= players[i].get("name") %></th>
+                            <% }else if(i === 3) { %>
+                            <th class="danger"><%= players[i].get("name") %></th>
+                            <% } %>
+                            <% } %>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </nav>
         <!----------------------- ここに実際に地図アプリを実装 ------------------------>
         <div class="container-fluid">
             <div class="row">
@@ -81,7 +82,7 @@
                 });
                 //TODO:getする
                 var players = [];
-                var targets = [Target.DEN2_DIE];
+                var targets = [];
                 var map = new Map();
                 //とりあえず書かないと呼び出しの依存性循環…
                 map.drawMap(Target.DEN2_DIE.position);
@@ -99,9 +100,19 @@
                 socketio.on("connect", function(data) {
                     //接続時
                     //newPlayerメッセージ排出ー＞その後locationUpdateを送る
-                    this.emit("newPlayer", me, function() {
+                    this.emit("newPlayer", {
+                        id : me.id,
+                        name : me.name
+                    }, function(area) {
                         //確実に位置情報を送るために…
                         connectionDeferred.resolve();
+                        //エリアを受信
+                        var target = new Target({
+                            position : new Y.LatLng(area.latitude, area.longitude),
+                            radius : area.radius
+                        });
+                        targets.push(target);
+                        map.addObject(target);
                     });
                 }).on("disconnect", function(data) {
                     //自分の回線が切れた
@@ -127,9 +138,15 @@
                         }
                     });
                     map.removeObject(data);
-                }).on("newArea", function(data) {
+                }).on("newArea", function(area) {
                     //新規エリア出現
-                    //TODO:地図書き換え
+                    map.removeObject(targets);
+                    var target = new Target({
+                        position : new Y.LatLng(area.latitude, area.longitude),
+                        radius : area.radius
+                    });
+                    targets.push(target);
+                    map.addObject(target);
                 }).on("gameEnd", function(data) {
                     //おわり｜NHK
                     document.location = "/result";
@@ -138,7 +155,7 @@
                 //GeoLocationについて
                 var watchId = navigator.geolocation.watchPosition(function(position) {
                     var p = {
-                        id : socketio.socket.sessionid,
+                        id : me.id,
                         latitude : position.coords.latitude,
                         longitude : position.coords.longitude,
                         accuracy : position.accuracy

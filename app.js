@@ -118,7 +118,7 @@ process.on('uncaughtException', function(err) {
 
 //サーバとソケットを結びつける
 var io = socketio.listen(server);
-
+var area;
 //========================== LocalInvader/roomで行われるソケット通信==========================
 /*
  * 2014-3-25
@@ -133,15 +133,15 @@ var room_socket = io.of('/room').on('connection', function(socket) {
             //タイマーをスタートさせる
             share.timer = true;
             setTimeout(function() {
-                var location = share.new_area();
-                var area = new Area(location);
-                area.save(function(err, area) {
-                    //次のゲームが始められるようにフラグを折る
-                    share.timer = false;
-			        share.setStartGame(true);
-                    room_socket.emit("S_to_C_game_start");
-                    //ここでroomからplay画面へ移行する時間を設定(ms)
-                });
+                area = share.new_area();
+                // area = new Area(location);
+                // area.save(function(err, area) {
+                // //次のゲームが始められるようにフラグを折る
+                // });
+                share.timer = false;
+                share.setStartGame(true);
+                room_socket.emit("S_to_C_game_start");
+                //ここでroomからplay画面へ移行する時間を設定(ms)
             }, 3000);
         }
     });
@@ -157,7 +157,6 @@ var room_socket = io.of('/room').on('connection', function(socket) {
 
 //========================== LocalInvader/roomで行われるソケット通信 終わり==========================
 
-
 //========================== LocalInvader/playで行われるソケット通信==========================
 /*
 * 2014-3-26
@@ -169,30 +168,29 @@ var room_socket = io.of('/room').on('connection', function(socket) {
 var game = io.set("heartbeats", true).of("/play");
 game.on("connection", function(socket) {
     //参加時の処理
-    var sessid = socket.transport.sessid;
-    var location = share.new_area();
     socket.on("locationUpdate", function(data) {
         //位置情報定期更新
-        //TODO:ここでエリア攻略判定する
-    	if (rad > share.distance(location, data)) {
-    		//新しいエリアを生成
-    		location = share.new_area();
-    	}
-        //TODO:はいってたら新規エリア作成ー＞emit
-        //TODO:とった人のポイント増やす
-        socket.emit("newArea", location);
+        //ここでエリア攻略判定する
+        if (area.radius > share.distance(area, data)) {
+            //新しいエリアを生成
+            area = share.new_area();
+            //はいってたら新規エリア作成ー＞emit
+            socket.emit("newArea", area);
+        }
         socket.broadcast.emit("locationUpdate", data);
     }).on("newPlayer", function(data, callback) {
-        //新規プレイヤー追加
-        //TODO:player_idとsocketioのsessidを紐付けてDBに
-        socket.broadcast.emit("newPlayer", data);
-        callback();
+        socket.set("player_id", data.id, function() {
+            //新規プレイヤー追加
+            socket.broadcast.emit("newPlayer", data);
+            //接続時にエリアを返すように…
+            callback(area);
+        });
     }).on("disconnect", function() {
         //死亡宣告通知
-        //TODO:socketioのsessidからplayer_idをひもづける
-        socket.broadcast.emit("playerDie", {
-            id : sessid
-            //TODO:何を送るか
+        socket.get('id', function(err, id) {
+            socket.broadcast.emit("playerDie", {
+                id : id
+            });
         });
     });
 });
