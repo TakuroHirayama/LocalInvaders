@@ -131,6 +131,7 @@ var room_socket = io.of('/room').on('connection', function(socket) {
     socket.on("C_to_S_timer_start", function() {
         if (share.timer == false) {
             //タイマーをスタートさせる
+        	console.log("入った");
             share.timer = true;
             setTimeout(function() {
                 area = share.new_area();
