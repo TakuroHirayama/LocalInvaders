@@ -86,8 +86,6 @@ app.use(express.session({
 }));
 
 app.use(app.router);
-//クロスサイトリクエストフォージェリ対策
-app.use(express.csrf());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -98,10 +96,11 @@ if ('development' == app.get('env')) {
 
 //routes/index.jsを見に行っている
 app.get('/', title);
+app.post('/', titlePost);
 app.get('/chatroom', chat.chatroom);
 app.get('/gelocation_test', geo.gelocation_test);
 //app.get('/title', title);
-app.post('/title', titlePost);
+//app.post('/title', titlePost);
 app.get('/room', room);
 app.get('/play', play);
 app.get('/result', result);
