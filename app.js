@@ -142,7 +142,7 @@ var room_socket = io.of('/room').on('connection', function(socket) {
                 share.setStartGame(true);
                 room_socket.emit("S_to_C_game_start");
                 //ここでroomからplay画面へ移行する時間を設定(ms)
-            }, 3000);
+            }, 30000);
         }
     });
     //切断したときに送信
