@@ -2,7 +2,7 @@ var Target = function(params) {
     params = params || {};
     this.id = params.id || (new Date()).getTime();
     this.name = params.name || "foo";
-    this.position = params.position || new Y.LatLng(0, 0);
+    this.position = params.position  || new Y.LatLng(0, 0);
     this.radius = params.radius || 0.1;
     this.mapMarkers = [];
 };

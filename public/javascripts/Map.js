@@ -15,6 +15,7 @@ var Map = function(params) {
     this.zoom=17;
     this.initControls();
     $(document).on("updateObject", this.update.bind(this));
+    $(document).on("removeObject", this.draw.bind(this));
     //TODO:効いてない、というかそもそも要らない
     $(window).on("resize", function() {
         this.ymap.updateSize();
@@ -62,9 +63,9 @@ Map.prototype.removeObject = function(object) {
     if (object && object.id) {
         $.each(this.objects, function(i, v) {
             if (v.id === object.id) {
-                players.splice(i, 1);
+                this.objects.splice(i, 1);
                 $.event.trigger({
-                    type : "updateObject",
+                    type : "removeObject",
                     object : v
                 });
             }
