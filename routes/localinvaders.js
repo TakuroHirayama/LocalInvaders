@@ -81,6 +81,8 @@ exports.room = function(req, res) {
 exports.play = function(req, res) {
 	Player.find({}).sort("-date").limit(MAX_PLAYER_COUNT).exec(function(err, docs) {
 		res.render('play', {
+		    player_id:req.session.player_id,
+		    name:req.session.name,
             players : docs
         });
 	});
