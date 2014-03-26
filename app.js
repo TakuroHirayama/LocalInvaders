@@ -171,6 +171,7 @@ game.on("connection", function(socket) {
     socket.on("locationUpdate", function(data) {
         //位置情報定期更新
         //ここでエリア攻略判定する
+        console.log(area);
         if (area.radius > share.distance(area, data)) {
             //新しいエリアを生成
             area = share.new_area();

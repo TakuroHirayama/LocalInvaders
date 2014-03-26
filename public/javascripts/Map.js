@@ -11,11 +11,10 @@ var Map = function(params) {
             enableFlickScroll : true
         }
     });
-    this.view_self=false;
-    this.zoom=17;
+    this.view_self = false;
+    this.zoom = 17;
     this.initControls();
     $(document).on("updateObject", this.update.bind(this));
-    $(document).on("removeObject", this.draw.bind(this));
     //TODO:効いてない、というかそもそも要らない
     $(window).on("resize", function() {
         this.ymap.updateSize();
@@ -60,24 +59,22 @@ Map.prototype.addObject = function(object) {
  * 地図上の何かを除去
  * */
 Map.prototype.removeObject = function(object) {
-    if (object && object.id) {
-        $.each(this.objects, function(i, v) {
-            if (v.id === object.id) {
-                this.objects.splice(i, 1);
-                $.event.trigger({
-                    type : "removeObject",
-                    object : v
-                });
+    var self = this;
+    $.each(this.objects, function(i, v) {
+        if (v.isTarget && v.isTarget()) {
+            self.objects.splice(i, 1);
+            if (object && object.remove) {
+                object.remove(self.ymap);
             }
-        });
-    }
+        }
+    });
 };
 
 /**
  * 地図表示
  * */
 Map.prototype.drawMap = function(center) {
-    if (this.view_self||center) {
+    if (this.view_self || center) {
         this.ymap.drawMap(center, this.ymap.getZoom(), Y.LayerSetId.NORMAL);
         return;
     }
