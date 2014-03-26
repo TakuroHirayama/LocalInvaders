@@ -113,7 +113,7 @@ Map.prototype.draw = function(center) {
 Map.prototype.update = function(event) {
     if (event.object && typeof event.object.draw === "function" && $.inArray(event.object, this.objects) > -1) {
         event.object.draw(this.ymap);
-        this.drawMap();
+        //this.drawMap();
     }
 
 };
