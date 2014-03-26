@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LocalInvaders</title>
-    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
-    <link href="/stylesheets/style.css" rel="stylesheet">
-  <link href="/stylesheets/bootswatch.css" rel="stylesheet">
-  <!-- ここからwebFont -->
-  <link href='http://fonts.googleapis.com/css?family=Lemon' rel='stylesheet' type='text/css'>
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="stylesheets/style.css" rel="stylesheet">
+	<link href="stylesheets/bootswatch.css" rel="stylesheet">
+	<!-- ここからwebFont -->
+	<link href='http://fonts.googleapis.com/css?family=Lemon' rel='stylesheet' type='text/css'>
     <style>
       body {
         font-family: 'Lemon', cursive;
@@ -17,28 +17,25 @@
     </style>
     <!-- ここまでwebFont -->
     <link href="stylesheets/button.css" rel="stylesheet">
-
+ 
   </head>
   <body background="/img/skulls.png"> <!-- 壁紙 -->
-    
-    <div class="container" style="padding:20px 0">
-    
-    <div style="text-align:center">
-      <div class="row" id="titledesign">
-        <span class="col-xs-12" style="text-align:center"><font color="brown"><strong>Local Invaders</strong></font></span>
-      </div>
-        <!--<img src="img/title.png" width="100%" height="auto" alt="title" id="titleLI">--> <!-- タイトル -->
-      </div>
-  
-      <div style="text-align:center; padding:60px">
-        <% if(locals.error){ %>
+
+
+  <div class="container" style="padding:20px 0">
+		<div style="text-align:center">
+			<div class="row" id="titledesign">
+				<span class="col-xs-12" style="text-align:center"><font color="brown"><strong>Local Invaders</strong></font></span>
+			</div>
+  		</div>
+         <% if(locals.error){ %>
                 <div><%= locals.error%></div>
          <% } %>
+        <div style="text-align:center; padding:60px">
         <!-- ここから遊ぶボタン -->
-      <!--<a data-toggle="modal" href="#start"><img src="img/asobu.gif" height="auto" alt="asobu" id="startbutton"></a>-->
-      <div class="row">
-      <a data-toggle="modal" href="#start"><button class="btn btn-danger" class="col-xs-12">あそぶ</button></a>
-      </div>
+		<div class="row" id="asobudesign">
+			<a data-toggle="modal" href="#start"><button class="btn btn-danger" class="col-xs-12"><font>あそぶ</font></button></a>
+		</div>
         <!-- ここまで遊ぶボタン -->
 
         <!-- ここからモード選択 -->
@@ -50,12 +47,16 @@
                 <h4 class="modal-title">モード選択をします</h4>
               </div>
               <div class="modal-body">
-                <a data-toggle="modal" href="#startAreaGame" class="btn btn-primary btn-lg"  style="margin:30px; font-size:20px"　class="close" data-dismiss="modal"><i class="glyphicon glyphicon-flag">エリア争奪戦モード</i></a>
-                <a data-toggle="modal" href="#startTreasureGame" class="btn btn-primary btn-lg"  style="margin:30px; font-size:20px"　class="close" data-dismiss="modal"><i class="glyphicon glyphicon-tree-conifer">宝探しモード</i></a>
-              </div>
-            </div>
-          </div>
-        </div>
+              		<div id="startbuttondesign" class="row">
+	    				<a data-toggle="modal" href="#startAreaGame" class="btn btn-primary btn-lg" class="col-xs-2" style="margin:30px"　class="close" data-dismiss="modal"><i class="glyphicon glyphicon-flag"><strong>エリア争奪戦モード</strong></i></a>
+	    			</div>
+	    			<div id="startbuttondesign2" class="row">
+	    				<a data-toggle="modal" href="#startTreasureGame" class="btn btn-primary btn-lg" class="col-xs-2"  style="margin:30px"　class="close" data-dismiss="modal"><i class="glyphicon glyphicon-tree-conifer">宝探しモード</i></a>
+	    			</div>
+	    	  </div>
+	    	</div>
+	      </div>
+	    </div>
         <!-- ここまでモード選択 -->
 
         <!-- ここからエリア争奪戦モード -->
@@ -80,7 +81,7 @@
                   2014-3-25
                   location.hrefだと上手く動かなかったので、formタグにactionを追加することで解決した
                   -->
-                  <form class="form-inline" action="/" method="post">
+                  <form class="form-inline" action="/title" method="post">
                     <div class="form-group">
                       <label class="control-label" for="playername">プレイヤーネームを入力してゲームに参加</label>
                       <input type="text" id="playername" name="playername" class="form-control" placeholder="playername" />
@@ -116,7 +117,7 @@
                 </ol>
               </div>
               <div class="modal-footer">
-                  <form class="form-inline" action="/">
+                  <form class="form-inline" action="/LocalInvaders/room">
                     <div class="form-group">
                       <label class="control-label" for="playername">プレイヤーネームを入力</label>
                       <input type="text" id="playername" name="playername" class="form-control" placeholder="playername" />
@@ -139,7 +140,8 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="/javascripts/bootstrap.min.js"></script>
-    <script src="/javascripts/mode.js"></script>
+    <script src="javascripts/bootstrap.min.js"></script>
+    <script src="javascripts/jquery.min.js"></script>
+    <script src="javascripts/mode.js"></script>
   </body>
 </html>

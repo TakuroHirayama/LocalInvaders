@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,6 +16,7 @@
       }
     </style>
     <!-- ここまでwebFont -->
+    <link href="stylesheets/button.css" rel="stylesheet">
 
     
   </head>
@@ -25,12 +25,57 @@
     <div class="container" style="padding:20px 0">
   
     <!------------------------- ここに結果画面 ---------------------------->
-  
-  
-  </div>
+ 		<div class="container" style="padding:20px 0">
+		
+		
+			<nav class="navbar navbar-fixed-top"> 
+	    		<div class="nav">
+	    			<table class="table table-bordered">
+	    				<thead>
+			  				<tr><div class="alert alert-warning">
+	  							<button class="close" data-dismiss="alert"></button>
+	    						<font size="5px"><strong>結果発表</strong></font>
+	    					</div></tr>
+			  			</thead>
+	    			</table>
+	    		</div>
+			</nav>
+		
+			<div class="row">
+				<table class="table table-striped table-condensed" id="resulttable">
+					<thead>
+						<tr bgcolor="#B22222"><th colspan="2" class="col-xs-4"><strong><font color="white" size="5px">順位</font></strong></th></tr>
+					</thead>
+					<tbody>
+						<tr><td class="col-xs-4"><h3>1位</h3></td><td class="col-xs-8"><h3>1P</h3></td></tr>
+						<tr bgcolor="white"><td class="col-xs-4"><h4>2位</h4></td><td class="col-xs-8"><h4>2P</h4></td></tr>
+						<tr><td class="col-xs-4"><h4>3位</h4></td><td class="col-xs-8"><h4>3P</h4></td></tr>
+						<tr bgcolor="white"><td class="col-xs-4"><h4>4位</h4></td><td class="col-xs-8"><h4>4p</h4></td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+			
+			
+			
+			
+			<div class="row" id="gototitledesign" style="text-align:center">
+				<button class="btn btn-danger" class="col-xs-12"><font>タイトルに戻る</font></button>
+			</div>
+			
+			
+			
+			
+
+		<!--<div style="text-align:center">
+			<img src="img/gototitle.gif" height="auto" alt="goToTitle" id="titleback">
+		</div>-->
+	</div> 
   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="/javascripts/bootstrap.min.js"></script>
-    <script src="/javascripts/mode.js"></script>
+    <script src="javascripts/bootstrap.min.js"></script>
+    <script src="javascripts/jquery.min.js"></script>
+    <script src="javascripts/mode.js"></script>
   </body>
 </html>
