@@ -4,7 +4,11 @@ var start_game = require('../lib/share').getStartGame();
 const MAX_PLAYER_COUNT = 4;
 
 exports.title = function(req, res) {
-    res.render('title');
+    if (req.session.player_id) {
+        res.redirect("/room");
+    } else {
+        res.render('title');
+    }
 };
 
 exports.titlePost = function(req, res) {
@@ -50,12 +54,20 @@ exports.titlePost = function(req, res) {
 };
 
 exports.room = function(req, res) {
+    //名前入力済みか
+    if (!req.session.player_id) {
+        //遊べないお
+        //TODO:エラーページ表示
+        res.redirect("/");
+        return;
+    }
     //自分含めての最新ユーザ3人をdate降順で
     Player.find({}).sort("-date").limit(MAX_PLAYER_COUNT).exec(function(err, docs) {
-        if (err || docs.length > MAX_PLAYER_COUNT || !req.session.player_id) {
+        if (err || docs.length > MAX_PLAYER_COUNT) {
             //遊べないお
             //TODO:エラーページ表示
             res.redirect("/");
+            return;
         }
         res.render('room', {
             players : docs,
@@ -75,12 +87,25 @@ exports.play = function(req, res) {
 	});
 };
 
-//管理用
+//管理用のデータベース削除
 exports.admin_reset = function(req, res) {
     mongoose.connection.collections['players'].drop(function(err) {
         console.log('players dropped');
     });
     res.redirect("/");
+};
+
+exports.logout = function(req, res) {
+    if (req.session.player_id) {
+        Player.remove({
+            player_id : req.session.player_id
+        }, function(err) {
+            if (!err) {
+                req.session.destroy();
+            }
+            res.redirect("/");
+        });
+    }
 };
 
 exports.result = function(req, res) {

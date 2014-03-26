@@ -24,6 +24,7 @@ var titlePost = require('./routes/localinvaders').titlePost;
 var room = require('./routes/localinvaders').room;
 var play = require('./routes/localinvaders').play;
 var admin_reset = require('./routes/localinvaders').admin_reset;
+var logout = require('./routes/localinvaders').logout;
 var result = require('./routes/localinvaders').result;
 /*
  * 2014-3-24
@@ -99,6 +100,7 @@ app.get('/room', room);
 app.get('/play', play);
 app.get('/result', result);
 app.get('/users', user.list);
+app.get('/logout', logout);
 app.get('/admin/reset', admin_reset);
 
 //ここでサーバを立ち上げている
