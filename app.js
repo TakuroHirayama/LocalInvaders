@@ -168,12 +168,16 @@ var room_socket = io.of('/room').on('connection', function(socket) {
 var game = io.set("heartbeats", true).of("/play");
 game.on("connection", function(socket) {
     //参加時の処理
-    var player_id = socket.transport.sessid;
     socket.on("locationUpdate", function(data) {
         //位置情報定期更新
         //TODO:ここでエリア攻略判定する
+    	if (rad > share.distance(location, data)) {
+    		//新しいエリアを生成
+    		location = share.new_area();
+    	}
         //TODO:はいってたら新規エリア作成ー＞emit
         //TODO:とった人のポイント増やす
+        socket.emit("newArea", location);
         socket.broadcast.emit("locationUpdate", data);
     }).on("newPlayer", function(data, callback) {
         socket.set("player_id", data.id, function() {
