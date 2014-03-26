@@ -155,7 +155,7 @@
                 //GeoLocationについて
                 var watchId = navigator.geolocation.watchPosition(function(position) {
                     var p = {
-                        id : socketio.socket.sessionid,
+                        id : me.id,
                         latitude : position.coords.latitude,
                         longitude : position.coords.longitude,
                         accuracy : position.accuracy

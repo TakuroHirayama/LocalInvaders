@@ -170,14 +170,13 @@ game.on("connection", function(socket) {
     //参加時の処理
     socket.on("locationUpdate", function(data) {
         //位置情報定期更新
-        //TODO:ここでエリア攻略判定する
-    	if (rad > share.distance(location, data)) {
-    		//新しいエリアを生成
-    		location = share.new_area();
-    	}
-        //TODO:はいってたら新規エリア作成ー＞emit
-        //TODO:とった人のポイント増やす
-        socket.emit("newArea", location);
+        //ここでエリア攻略判定する
+        if (area.radius > share.distance(area, data)) {
+            //新しいエリアを生成
+            area = share.new_area();
+            //はいってたら新規エリア作成ー＞emit
+            socket.emit("newArea", area);
+        }
         socket.broadcast.emit("locationUpdate", data);
     }).on("newPlayer", function(data, callback) {
         socket.set("player_id", data.id, function() {
