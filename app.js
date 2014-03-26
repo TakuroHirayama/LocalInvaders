@@ -170,9 +170,14 @@ var game = io.set("heartbeats", true).of("/play");
 game.on("connection", function(socket) {
     //参加時の処理
     var sessid = socket.transport.sessid;
+    var location = share.new_area();
     socket.on("locationUpdate", function(data) {
         //位置情報定期更新
         //TODO:ここでエリア攻略判定する
+    	if (rad > share.distance(location, data)) {
+    		//新しいエリアを生成
+    		location = share.new_area();
+    	}
         //TODO:はいってたら新規エリア作成ー＞emit
         //TODO:とった人のポイント増やす
         socket.emit("newArea", location);
