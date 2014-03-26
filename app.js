@@ -100,7 +100,7 @@ if ('development' == app.get('env')) {
 app.get('/', title);
 app.get('/chatroom', chat.chatroom);
 app.get('/gelocation_test', geo.gelocation_test);
-app.get('/title', title);
+//app.get('/title', title);
 app.post('/title', titlePost);
 app.get('/room', room);
 app.get('/play', play);
@@ -128,7 +128,7 @@ var io = socketio.listen(server);
  * 制作：石川
  * room画面でのみ使われるソケット通信
  */
-var room_socket = io.of('/LocalInvaders/room').on('connection', function(socket) {
+var room_socket = io.of('/room').on('connection', function(socket) {
     //メッセージ送信（送信者にも送られる）
     //C_to_Smessageはイベント名
     socket.on("C_to_S_timer_start", function() {
@@ -158,7 +158,7 @@ var room_socket = io.of('/LocalInvaders/room').on('connection', function(socket)
  * 制作：石川
  * play画面でのみ使われるソケット通信
  */
-var play_socket = io.of('/LocalInvaders/play').on('connection', function(socket) {
+var play_socket = io.of('/play').on('connection', function(socket) {
     socket.on("C_to_S_game_start", function() {
         //次のゲームが始められるようにフラグを折る
         share.timer = false;
