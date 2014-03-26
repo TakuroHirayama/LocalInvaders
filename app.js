@@ -5,8 +5,6 @@
 var express = require('express');
 var routes = require('./routes');
 //これを追加することで、ページ毎に読み込んでくるroutesの中を分けた
-var chat = require('./routes/chatroom');
-var geo = require('./routes/gelocation_test');
 var user = require('./routes/user');
 var game = require('./routes/game');
 var http = require('http');
@@ -100,10 +98,6 @@ if ('development' == app.get('env')) {
 //routes/index.jsを見に行っている
 app.get('/', title);
 app.post('/', titlePost);
-app.get('/chatroom', chat.chatroom);
-app.get('/gelocation_test', geo.gelocation_test);
-//app.get('/title', title);
-//app.post('/title', titlePost);
 app.get('/room', room);
 app.get('/play', play);
 app.get('/result', result);
@@ -144,7 +138,7 @@ var room_socket = io.of('/room').on('connection', function(socket) {
                 area.save(function(err, area) {
                     //次のゲームが始められるようにフラグを折る
                     share.timer = false;
-                    share.game_started = true;
+			        share.setStartGame(true);
                     room_socket.emit("S_to_C_game_start");
                     //ここでroomからplay画面へ移行する時間を設定(ms)
                 });

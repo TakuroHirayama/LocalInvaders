@@ -1,22 +1,82 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>LocalInvaders</title>
-        <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
-        <link href="/stylesheets/style.css" rel="stylesheet">
-        <link href="/stylesheets/bootswatch.css" rel="stylesheet">
-        <!-- ここからwebFont -->
-        <link href='http://fonts.googleapis.com/css?family=Lemon' rel='stylesheet' type='text/css'>
-        <style>
-            body {
-                font-family: 'Lemon', cursive;
-            }
-        </style>
-        <!-- ここまでwebFont -->
-
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LocalInvaders</title>
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <link href="/stylesheets/bootswatch.css" rel="stylesheet">
+    <!-- ここからwebFont -->
+    <link href='http://fonts.googleapis.com/css?family=Lemon' rel='stylesheet' type='text/css'>
+    <style>
+      body {
+        font-family: 'Lemon', cursive;
+      }
+    </style>
+    <!-- ここまでwebFont -->
+    <!-- socket.ioを使えるようにしている -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var s = io.connect('/play'); //ローカル
+    
+      //サーバから受け取るイベント
+      s.on("connect", function () {});  // 接続時
+      s.on("disconnect", function (client) {});  // 切断時
+      s.on("S_to_C_create_new_area", function(location) {
+        createNewArea(location);
+      });
+      s.on("S_to_C_game_end", function() {
+        document.location = "/result";
+      });
+      
+      //新しいエリアを生成する
+      function createNewArea(location) {
+        var latitude  = location.latitude;
+        var longitude = location.longitude;
+        //locationには緯度と経度が入っている
+      }
+      
+      //クライアントの位置情報を渡す
+      function sendMyLocation() {
+        navigator.geolocation.getCurrentPosition(
+          //位置情報の取得に成功
+          function(position) {
+            s.emit("C_to_S_location", {position:position, id:id});
+          }, 
+          //位置情報の取得に失敗
+          function(err) {
+            //何かエラー的な何かを送る
+          });
+      }
+    </script>
+    
+  </head>
+  <body background="/img/skulls.png"> <!-- 壁紙 -->
+    
+     <nav class="navbar navbar-fixed-top"> 
+      <div class="nav">
+        <table class="table table-bordered">
+          <thead>              
+            <tr>
+              <% for(var i=0;i < players.length;i++) { %>
+                <% if(i === 0) { %>
+                  <th class="info"><%= players[i].get("name") %></th>
+                <% }else if(i === 1) { %>
+                  <th class="success"><%= players[i].get("name") %></th>
+                <% }else if(i === 2) { %>
+                  <th class="warning"><%= players[i].get("name") %></th>
+                <% }else if(i === 3) { %>
+                  <th class="danger"><%= players[i].get("name") %></th>
+                <% } %>
+              <% } %>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </nav>
+    
     </head>
     <body background="/img/skulls.png">
         <!-- 壁紙 -->
