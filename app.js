@@ -22,9 +22,10 @@ var app = express();
  * ページ遷移する際に行う動作の読み込み
  */
 var title = require('./routes/localinvaders').title;
+var titlePost = require('./routes/localinvaders').titlePost;
 var room = require('./routes/localinvaders').room;
 var play = require('./routes/localinvaders').play;
-
+var admin_reset = require('./routes/localinvaders').admin_reset;
 /*
  * 2014-3-24
  * 制作：石川
@@ -95,16 +96,15 @@ if ('development' == app.get('env')) {
 }
 
 //routes/index.jsを見に行っている
-app.get('/', routes.index);
+app.get('/', title);
 app.get('/chatroom', chat.chatroom);
 app.get('/gelocation_test', geo.gelocation_test);
-app.get('/LocalInvaders/title', title);
-app.get('/LocalInvaders/room', room);
-app.get('/LocalInvaders/play', play);
+app.get('/title', title);
+app.post('/title', titlePost);
+app.get('/room', room);
+app.get('/play', play);
 app.get('/users', user.list);
-app.get('/game', game.main);
-app.get('/game/form', game.testForm);
-app.post('/game/form', game.testFormPost);
+app.get('/admin/reset', admin_reset);
 
 //ここでサーバを立ち上げている
 var server = http.createServer(app).listen(app.get('port'), function() {
@@ -135,7 +135,7 @@ var game_start = io.of('/LocalInvaders/room').on('connection', function(socket) 
             share.timer = true;
             console.log('timer start');
             setTimeout(function() {
-                game_start.emit("S_to_C_game_start")
+                game_start.emit("S_to_C_game_start");
             }, 10000);
         } else {
             //タイマーがスタートしているので別の処理に飛ばす
@@ -231,7 +231,7 @@ game.on("connection", function(socket) {
         //位置情報定期更新
         socket.broadcast.emit("locationUpdate", data);
     }).on("newPlayer", function(data, callback) {
-        //プレイヤー参加
+        //新規プレイヤー追加
         socket.broadcast.emit("newPlayer", data);
         callback();
     }).on("playerDie", function(data) {
@@ -241,7 +241,7 @@ game.on("connection", function(socket) {
     }).on("clearTarget", function(data) {
         //エリア消滅
     }).on("disconnect", function() {
-        //死亡予告
+        //死亡宣告通知
         socket.broadcast.emit("playerDie", {
             id : sessid
         });
