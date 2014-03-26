@@ -71,9 +71,13 @@ exports.play = function(req, res) {
 };
 
 //管理用
-exports.admin_reset = function(req,res) {
+exports.admin_reset = function(req, res) {
     mongoose.connection.collections['players'].drop(function(err) {
         console.log('players dropped');
     });
     res.redirect("/");
+};
+
+exports.result = function(req, res) {
+    res.render('result');
 };

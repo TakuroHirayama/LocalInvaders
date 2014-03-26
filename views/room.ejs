@@ -19,9 +19,7 @@
         <!-- socket.ioを使えるようにしている -->
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            //var s = io.connect(); //リモート
-            var s = io.connect('/LocalInvaders/room');
-            //ローカル
+            var s = io.connect('/room');
 
             //サーバから受け取るイベント
             s.on("connect", function() {
