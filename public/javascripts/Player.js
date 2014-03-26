@@ -102,7 +102,13 @@ Player.prototype.draw = function(ymap) {
         ymap.addFeature(circle);
     }
 };
-
+Player.prototype.remove = function(ymap) {
+    if (this.mapMarkers && this.mapMarkers.length > 0) {
+        $.each(this.mapMarkers, function(i, v) {
+            ymap.removeFeature(v);
+        });
+    }
+};
 Player.prototype.onClick = function() {
     var position = this.getLatLng();
     position.Lon += 0.001;

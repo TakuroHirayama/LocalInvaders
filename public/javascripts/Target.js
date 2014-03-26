@@ -23,6 +23,10 @@ Target.MARKER_STYLES = {
     stroke : new Y.Style("ffffff", 4, 1)
 };
 
+Target.prototype.isTarget=function(){
+    return true;
+};
+
 /**
  * エリア位置取得
  * */
@@ -42,7 +46,13 @@ Target.prototype.setPosition = function(p) {
         });
     }
 };
-
+Target.prototype.remove = function(ymap) {
+    if (this.mapMarkers && this.mapMarkers.length > 0) {
+        $.each(this.mapMarkers, function(i, v) {
+            ymap.removeFeature(v);
+        });
+    }
+};
 /**
  * エリア図示/更新
  * */

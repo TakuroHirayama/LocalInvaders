@@ -21,7 +21,7 @@
         <link href="/stylesheets/button.css" rel="stylesheet">
 
     </head>
-    <body background="/img/skulls.png">
+    <body style="padding-top:38px;padding-left:0px"  background="/img/skulls.png">
         <!-- 壁紙 -->
 
         <nav class="navbar navbar-fixed-top">
@@ -54,6 +54,11 @@
             </div>
             <input type="hidden" id="myid" value="<%= player_id %>"/>
             <input type="hidden" id="myname" value="<%= name %>"/>
+            <%for(var i=0;i
+            <players.length;i++){%>
+                <input type="hidden" id="id_<%=i%>" value="<%= players[i].id %>"/>
+                <input type="hidden" id="name_<%=i%>" value="<%= players[i].name %>"/>
+                <%}%>
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -143,35 +148,56 @@
                     map.removeObject(data);
                 }).on("newArea", function(area) {
                     //新規エリア出現
-                    map.removeObject(targets);
+                    map.removeObject(targets[0]);
+                    targets = [];
                     var target = new Target({
                         position : new Y.LatLng(area.latitude, area.longitude),
                         radius : area.radius
                     });
                     targets.push(target);
                     map.addObject(target);
+                    var p = {
+                        id : me.id,
+                        latitude : me.latitude,
+                        longitude : me.longitude,
+                        accuracy : me.positionAccuracy
+                    };
+                    //表示している地図上の位置更新
+                    me.setPosition(p);
+                    socketio.emit("locationUpdate", p);
                 }).on("gameEnd", function(data) {
                     //おわり｜NHK
                     document.location = "/result";
                 });
 
                 //GeoLocationについて
-                var watchId = navigator.geolocation.watchPosition(function(position) {
-                    var p = {
+                var watcherId = setInterval(function() {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var p = {
+                            id : me.id,
+                            latitude : position.coords.latitude,
+                            longitude : position.coords.longitude,
+                            accuracy : position.accuracy
+                        };
+                        //表示している地図上の位置更新
+                        me.setPosition(p);
+                        //位置情報をブロードキャスト（細工済み）
+                        connectionDeferred.promise().then(function() {
+                            socketio.emit("locationUpdate", p);
+                            console.log(p);
+                        });
+                    });
+                }, LOCATION_UPDATE_INTERVAL);
+
+                $("nav").on("click", function() {
+                    me.setPosition(targets[0].position);
+                    socketio.emit("locationUpdate", {
                         id : me.id,
-                        latitude : position.coords.latitude,
-                        longitude : position.coords.longitude,
-                        accuracy : position.accuracy
-                    };
-                    //表示している地図上の位置更新
-                    me.setPosition(p);
-                    //位置情報をブロードキャスト（細工済み）
-                    connectionDeferred.promise().then(function() {
-                        socketio.emit("locationUpdate", p);
-                        console.log(p);
+                        latitude : me.position.Lat,
+                        longitude : me.position.Lon,
+                        accuracy : me.positionAccuracy
                     });
                 });
-
             });
         </script>
         </div>
