@@ -16,159 +16,70 @@
       }
     </style>
     <!-- ここまでwebFont -->
+    <link href="stylesheets/button.css" rel="stylesheet">
     <!-- socket.ioを使えるようにしている -->
     <script src="/socket.io/socket.io.js"></script>
+<<<<<<< HEAD
+    <script>
+      var s = io.connect('/LocalInvaders/play'); //ローカル
+    
+      //サーバから受け取るイベント
+      s.on("connect", function () {});  // 接続時
+      s.on("disconnect", function (client) {});  // 切断時
+      s.on("S_to_C_create_new_area", function(location) {
+        createNewArea(location);
+      });
+      s.on("S_to_C_game_end", function() {
+        document.location = "/LocalInvaders/result";
+      });
+      
+      //新しいエリアを生成する
+      function createNewArea(location) {
+        //locationには緯度と経度が入っている
+      }
+      
+      //クライアントの位置情報を渡す
+      function sendMyLocation() {
+        navigator.geolocation.getCurrentPosition(
+          //位置情報の取得に成功
+          function(position) {
+            s.emit("C_to_S_location", {position:position, id:id});
+          }, 
+          //位置情報の取得に失敗
+          function(err) {
+            //何かエラー的な何かを送る
+          });
+      }
+    </script>
+    
+=======
 
+>>>>>>> ad6e656b6591bc822181f17a9734ebf3ccec7a2b
   </head>
   <body background="/img/skulls.png"> <!-- 壁紙 -->
-
-     <nav class="navbar navbar-fixed-top">
+    
+     <nav class="navbar navbar-fixed-top"> 
       <div class="nav">
         <table class="table table-bordered">
           <thead>
-            <tr>
-              <% for(var i=0;i < players.length;i++) { %>
-                <% if(i === 0) { %>
-                  <th class="info"><%= players[i].get("name") %></th>
-                <% }else if(i === 1) { %>
-                  <th class="success"><%= players[i].get("name") %></th>
-                <% }else if(i === 2) { %>
-                  <th class="warning"><%= players[i].get("name") %></th>
-                <% }else if(i === 3) { %>
-                  <th class="danger"><%= players[i].get("name") %></th>
-                <% } %>
-              <% } %>
-            </tr>
+            <tr><th class="info">1P</th><th class="success">2P</th><th class="warning">3P</th><th class="danger">4P</th></tr>
           </thead>
         </table>
       </div>
     </nav>
+    
 
-    </head>
-    <body background="/img/skulls.png">
-        <!-- 壁紙 -->
-
-        <nav class="navbar navbar-fixed-top">
-            <div class="nav">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="info">1P</th><th class="success">2P</th><th class="warning">3P</th><th class="danger">4P</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </nav>
-        <!----------------------- ここに実際に地図アプリを実装 ------------------------>
-        <div class="container-fluid">
-            <div class="row">
-                <div id="map" class="col-xs-12 col-md-12">
-                    &nbsp;
-                </div>
-            </div>
-            <input type="hidden" id="myid" value="<%= player_id %>"/>
-            <input type="hidden" id="myname" value="<%= name %>"/>
-        </div>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script src="/javascripts/bootstrap.min.js"></script>
-        <script type="text/javascript" charset="utf-8" src="//js.api.olp.yahooapis.jp/OpenLocalPlatform/V1/jsapi?appid=dj0zaiZpPUlGUWE3N0JZTm5icSZzPWNvbnN1bWVyc2VjcmV0Jng9MGM-"></script>
-        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-        <script type="text/javascript" src="/javascripts/Player.js"></script>
-        <script type="text/javascript" src="/javascripts/Target.js"></script>
-        <script type="text/javascript" src="/javascripts/Map.js"></script>
-        <script type="text/javascript">
-            const LOCATION_UPDATE_INTERVAL = 5000;
-            $(function() {
-                //動作環境チェック
-                if (!navigator.geolocation) {
-                    alert("GeoLocationAPIに対応していないためｗｗｗｗｗ遊べませんｗｗｗばーかｗｗｗｗｗ");
-                    throw new Error("GeoLocationAPIに対応していないためｗｗｗｗｗ遊べませんｗｗｗばーかｗｗｗｗｗ");
-                }
-
-                //地図描画について
-                //画面いっぱいに地図を広げる
-                var $doc = $(document);
-                $("#map").css('height', $doc.height() - $("#header").height()).css('width', $doc.width());
-                //マーカー等を設定
-                var me = new Player({
-                    name : $("#myname").val(),
-                    id : $("#myid").val()
-                });
-                //TODO:getする
-                var players = [];
-                var targets = [Target.DEN2_DIE];
-                var map = new Map();
-                //とりあえず書かないと呼び出しの依存性循環…
-                map.drawMap(Target.DEN2_DIE.position);
-                map.addObjects(players);
-                map.addObjects(targets);
-                map.addObject(me);
-
-                //socket.ioのconnectionとgeolocationの位置取得が非同期のため細工
-                var connectionDeferred = new $.Deferred();
-                //socket.ioについて
-                var socketio = io.connect("/play", {
-                    "reconnect" : true,
-                    "force new connection" : true
-                });
-                socketio.on("connect", function(data) {
-                    //接続時
-                    //newPlayerメッセージ排出ー＞その後locationUpdateを送る
-                    this.emit("newPlayer", me, function() {
-                        //確実に位置情報を送るために…
-                        connectionDeferred.resolve();
-                    });
-                }).on("disconnect", function(data) {
-                    //自分の回線が切れた
-                    //切れてちゃ、なにもできない
-                    map.removeObject(me);
-                }).on("locationUpdate", function(data) {
-                    //定期位置アップデート
-                    $.each(players, function(i, v) {
-                        if (v.id === data.id) {
-                            v.setPosition(data).setPositionAccuracy(data);
-                        }
-                    });
-                }).on("newPlayer", function(data) {
-                    //新プレイヤー参加
-                    var newPlayer = new Player(data);
-                    players.push(newPlayer);
-                    map.addObject(newPlayer);
-                }).on("playerDie", function(data) {
-                    //ほかのプレイヤーが消失
-                    $.each(players, function(i, v) {
-                        if (v.id === data.id) {
-                            players.splice(i, 1);
-                        }
-                    });
-                    map.removeObject(data);
-                }).on("newArea", function(data) {
-                    //新規エリア出現
-                    //TODO:地図書き換え
-                }).on("gameEnd", function(data) {
-                    //おわり｜NHK
-                    document.location = "/result";
-                });
-
-                //GeoLocationについて
-                var watchId = navigator.geolocation.watchPosition(function(position) {
-                    var p = {
-                        id : socketio.socket.sessionid,
-                        latitude : position.coords.latitude,
-                        longitude : position.coords.longitude,
-                        accuracy : position.accuracy
-                    };
-                    //表示している地図上の位置更新
-                    me.setPosition(p);
-                    //位置情報をブロードキャスト（細工済み）
-                    connectionDeferred.promise().then(function() {
-                        socketio.emit("locationUpdate", p);
-                        console.log(p);
-                    });
-                });
-
-            });
-        </script>
-    </body>
+    <!----------------------- ここに実際に地図アプリを実装 ------------------------>
+  
+  
+  </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="javascripts/bootstrap.min.js"></script>
+    <script src="javascripts/jquery.min.js"></script>
+    <script src="javascripts/mode.js"></script>
+    <script>
+      //このページにユーザが一人でも入ったらタイマーをスタートさせる
+      s.emit("C_to_S_game_start");
+    </script>
+  </body>
 </html>
