@@ -18,39 +18,6 @@
     <!-- ここまでwebFont -->
     <!-- socket.ioを使えるようにしている -->
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-      var s = io.connect('/play'); //ローカル
-
-      //サーバから受け取るイベント
-      s.on("connect", function () {});  // 接続時
-      s.on("disconnect", function (client) {});  // 切断時
-      s.on("S_to_C_create_new_area", function(location) {
-        createNewArea(location);
-      });
-      s.on("S_to_C_game_end", function() {
-        document.location = "/result";
-      });
-
-      //新しいエリアを生成する
-      function createNewArea(location) {
-        var latitude  = location.latitude;
-        var longitude = location.longitude;
-        //locationには緯度と経度が入っている
-      }
-
-      //クライアントの位置情報を渡す
-      function sendMyLocation() {
-        navigator.geolocation.getCurrentPosition(
-          //位置情報の取得に成功
-          function(position) {
-            s.emit("C_to_S_location", {position:position, id:id});
-          },
-          //位置情報の取得に失敗
-          function(err) {
-            //何かエラー的な何かを送る
-          });
-      }
-    </script>
 
   </head>
   <body background="/img/skulls.png"> <!-- 壁紙 -->
