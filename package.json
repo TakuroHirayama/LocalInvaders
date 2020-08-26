@@ -10,7 +10,7 @@
         "express": "3.5.0",
         "ejs": "*",
         "socket.io": "0.9.16",
-        "mongoose": "3.8.8",
+        "mongoose": "5.10.0",
         "connect-mongo": "0.4.0"
     }
 }
