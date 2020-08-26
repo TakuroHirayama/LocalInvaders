@@ -7,7 +7,7 @@
         "debug": "NODE_PATH=$NODE_PATH:lib NODE_ENV=development node-dev --debug app.js"
     },
     "dependencies": {
-        "express": "3.5.0",
+        "express": "4.17.1",
         "ejs": "*",
         "socket.io": "0.9.16",
         "mongoose": "3.8.8",
